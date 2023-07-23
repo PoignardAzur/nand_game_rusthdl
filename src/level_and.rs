@@ -2,25 +2,13 @@ use rust_hdl::prelude::*;
 
 use crate::{NandGate, NotGate};
 
-#[derive(LogicBlock)]
+#[derive(Default, LogicBlock)]
 pub struct AndGate {
     pub input_1: Signal<In, Bits<1>>,
     pub input_2: Signal<In, Bits<1>>,
     pub output_signal: Signal<Out, Bits<1>>,
     nand: NandGate,
     invert: NotGate,
-}
-
-impl Default for AndGate {
-    fn default() -> Self {
-        Self {
-            input_1: Default::default(),
-            input_2: Default::default(),
-            output_signal: Default::default(),
-            nand: Default::default(),
-            invert: Default::default(),
-        }
-    }
 }
 
 impl Logic for AndGate {

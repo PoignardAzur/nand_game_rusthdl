@@ -1,18 +1,9 @@
 use rust_hdl::prelude::*;
 
-#[derive(LogicBlock)]
+#[derive(Default, LogicBlock)]
 pub struct NotGate {
     pub input_signal: Signal<In, Bits<1>>,
     pub output_signal: Signal<Out, Bits<1>>,
-}
-
-impl Default for NotGate {
-    fn default() -> Self {
-        Self {
-            input_signal: Default::default(),
-            output_signal: Default::default(),
-        }
-    }
 }
 
 impl Logic for NotGate {

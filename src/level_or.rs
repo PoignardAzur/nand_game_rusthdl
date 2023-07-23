@@ -2,7 +2,7 @@ use rust_hdl::prelude::*;
 
 use crate::{NandGate, NotGate};
 
-#[derive(LogicBlock)]
+#[derive(Default, LogicBlock)]
 pub struct OrGate {
     pub input_1: Signal<In, Bits<1>>,
     pub input_2: Signal<In, Bits<1>>,
@@ -10,19 +10,6 @@ pub struct OrGate {
     invert_1: NotGate,
     invert_2: NotGate,
     nand: NandGate,
-}
-
-impl Default for OrGate {
-    fn default() -> Self {
-        Self {
-            input_1: Default::default(),
-            input_2: Default::default(),
-            output_signal: Default::default(),
-            invert_1: Default::default(),
-            invert_2: Default::default(),
-            nand: Default::default(),
-        }
-    }
 }
 
 impl Logic for OrGate {
