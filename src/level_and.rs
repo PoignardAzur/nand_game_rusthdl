@@ -1,26 +1,35 @@
 use rust_hdl::prelude::*;
 
+use crate::{NandGate, NotGate};
+
 #[derive(LogicBlock)]
-pub struct NandGate {
+pub struct AndGate {
     pub input_1: Signal<In, Bits<1>>,
     pub input_2: Signal<In, Bits<1>>,
     pub output_signal: Signal<Out, Bits<1>>,
+    nand: NandGate,
+    invert: NotGate,
 }
 
-impl Default for NandGate {
+impl Default for AndGate {
     fn default() -> Self {
         Self {
             input_1: Default::default(),
             input_2: Default::default(),
             output_signal: Default::default(),
+            nand: Default::default(),
+            invert: Default::default(),
         }
     }
 }
 
-impl Logic for NandGate {
+impl Logic for AndGate {
     #[hdl_gen]
     fn update(&mut self) {
-        self.output_signal.next = !(self.input_1.val() & self.input_2.val());
+        self.nand.input_1.next = self.input_1.val();
+        self.nand.input_2.next = self.input_2.val();
+        self.invert.input_1.next = self.nand.output_signal.val();
+        self.output_signal.next = self.invert.output_signal.val();
     }
 }
 
@@ -31,33 +40,33 @@ mod tests {
     #[test]
     fn test() {
         let mut sim = Simulation::new();
-        sim.add_testbench(move |mut endpoint: Sim<NandGate>| {
+        sim.add_testbench(move |mut endpoint: Sim<AndGate>| {
             let mut x = endpoint.init()?;
 
             x.input_1.next = true.into();
             x.input_2.next = true.into();
 
             let mut x = endpoint.wait(10 * sim_time::ONE_MICROSECOND, x).unwrap();
-            sim_assert_eq!(endpoint, x.output_signal.val(), false, x);
+            sim_assert_eq!(endpoint, x.output_signal.val(), true, x);
 
             x.input_1.next = false.into();
             x.input_2.next = true.into();
 
             let mut x = endpoint.wait(10 * sim_time::ONE_MICROSECOND, x).unwrap();
-            sim_assert_eq!(endpoint, x.output_signal.val(), true, x);
+            sim_assert_eq!(endpoint, x.output_signal.val(), false, x);
 
             x.input_1.next = false.into();
             x.input_2.next = false.into();
 
             let x = endpoint.wait(10 * sim_time::ONE_MICROSECOND, x).unwrap();
-            sim_assert_eq!(endpoint, x.output_signal.val(), true, x);
+            sim_assert_eq!(endpoint, x.output_signal.val(), false, x);
 
             endpoint.done(x)
         });
         sim.run_to_file(
-            Box::new(NandGate::default()),
+            Box::new(AndGate::default()),
             5 * sim_time::ONE_SEC,
-            "nandgate.vcd",
+            "andgate.vcd",
         )
         .unwrap();
     }

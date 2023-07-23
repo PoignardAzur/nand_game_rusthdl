@@ -1,7 +1,7 @@
 use rust_hdl::prelude::*;
 
 #[derive(LogicBlock)]
-struct NotGate {
+pub struct NotGate {
     pub input_1: Signal<In, Bits<1>>,
     pub output_signal: Signal<Out, Bits<1>>,
 }
