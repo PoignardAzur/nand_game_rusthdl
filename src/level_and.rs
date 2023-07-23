@@ -28,7 +28,7 @@ impl Logic for AndGate {
     fn update(&mut self) {
         self.nand.input_1.next = self.input_1.val();
         self.nand.input_2.next = self.input_2.val();
-        self.invert.input_1.next = self.nand.output_signal.val();
+        self.invert.input_signal.next = self.nand.output_signal.val();
         self.output_signal.next = self.invert.output_signal.val();
     }
 }

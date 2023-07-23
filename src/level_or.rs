@@ -28,8 +28,8 @@ impl Default for OrGate {
 impl Logic for OrGate {
     #[hdl_gen]
     fn update(&mut self) {
-        self.invert_1.input_1.next = self.input_1.val();
-        self.invert_2.input_1.next = self.input_2.val();
+        self.invert_1.input_signal.next = self.input_1.val();
+        self.invert_2.input_signal.next = self.input_2.val();
         self.nand.input_1.next = self.invert_1.output_signal.val();
         self.nand.input_2.next = self.invert_2.output_signal.val();
         self.output_signal.next = self.nand.output_signal.val();
